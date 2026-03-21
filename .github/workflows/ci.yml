@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: "5.4"
+
+      - name: Syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          luac -p OneButtonPet.lua
+          luac -p tests/run.lua
+
+      - name: Run tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          lua tests/run.lua

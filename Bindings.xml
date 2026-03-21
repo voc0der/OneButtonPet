@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding name="ONEBUTTONPET_TOGGLE" header="ONEBUTTONPET">
+        OneButtonPet_ToggleBinding();
+    </Binding>
+</Bindings>

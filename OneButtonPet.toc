@@ -1,0 +1,8 @@
+## Interface: 20504
+## Title: OneButtonPet
+## Notes: One button to toggle pet attack and follow on your current target.
+## Author: voc0der
+## Version: 1.0.0
+
+Bindings.xml
+OneButtonPet.lua
