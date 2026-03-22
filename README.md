@@ -8,7 +8,7 @@
   TBC Anniversary Classic pet-control addon for a single attack/follow toggle button.
 </p>
 
-<p align="center"><strong>Current version:</strong> <code>1.0.0</code></p>
+<p align="center"><strong>Current version:</strong> <code>1.0.1</code></p>
 
 ## Scope
 
@@ -96,6 +96,6 @@ luac -p OneButtonPet.lua
 
 Release workflow details are in [`RELEASING.md`](RELEASING.md).
 
-## License
+## Star History
 
-MIT. See [LICENSE](LICENSE).
+[![Star History Chart](https://api.star-history.com/svg?repos=voc0der/OneButtonPet&type=Date)](https://www.star-history.com/#voc0der/OneButtonPet&Date)
