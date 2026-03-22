@@ -13,20 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Lua
-        uses: leafo/gh-actions-lua@v11
-        with:
-          luaVersion: "5.4"
+      - name: Install Lua 5.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y lua5.4
 
       - name: Syntax check
         shell: bash
         run: |
           set -euo pipefail
-          luac -p OneButtonPet.lua
-          luac -p tests/run.lua
+          luac5.4 -p OneButtonPet.lua
+          luac5.4 -p tests/run.lua
 
       - name: Run tests
         shell: bash
         run: |
           set -euo pipefail
-          lua tests/run.lua
+          lua5.4 tests/run.lua
