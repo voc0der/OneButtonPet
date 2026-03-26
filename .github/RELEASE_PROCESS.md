@@ -3,7 +3,6 @@
 ## Automated Process
 
 Every push to `main` triggers an automated release pipeline:
-- CI validates Lua syntax and runs local tests
 - The tag workflow reads the version from `OneButtonPet.toc`
 - A git tag is created if one does not already exist for that version
 - The tag push triggers the packager workflow
@@ -47,7 +46,7 @@ git commit -m "Release v1.0.X"
 git push
 ```
 
-The CI pipeline handles validation, tagging, and packaging automatically.
+GitHub Actions handles tagging and packaging automatically.
 
 If no new tag appears, check whether the tag for that version already exists.
 

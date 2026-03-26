@@ -28,7 +28,7 @@ Before automated release can work end-to-end, configure:
 1. Update version in `OneButtonPet.toc`
 2. Update `CHANGELOG.md` with release notes
 3. Commit and push to `main`
-4. CI validates syntax/tests, then the tag workflow creates a version tag from the TOC
+4. The tag workflow creates a version tag from the TOC
 5. The tag triggers the packager workflow
 
 ### Troubleshooting
