@@ -7,7 +7,13 @@ manual-changelog:
   markup-type: markdown
 
 ignore:
+  - CHANGELOG.md
+  - CONTRIBUTING.md
+  - LICENSE
+  - RELEASING.md
+  - assets
   - README.md
+  - tests
   - .gitignore
   - .github
 

@@ -1,5 +1,18 @@
 ## [Unreleased]
 
+## [1.0.2] - 2026-03-26
+
+### Added
+- Added pull-request packaging workflows that can post a downloadable addon artifact for labeled PRs
+- Added a `CONTRIBUTING.md` guide with local setup, verification, packaging, and PR expectations
+
+### Changed
+- Simplified the README for players, moved contributor/development details out of the main page, and refreshed the Star History embed
+
+### Fixed
+- Updated tag workflow secret handling so the release tag flow behaves correctly when `RELEASE_PAT` is missing
+- Limited packaged addon archives to runtime files listed in `OneButtonPet.toc`, keeping tests, assets, and repo-only docs out of builds
+
 ## [1.0.1] - 2026-03-22
 
 ### Changed
