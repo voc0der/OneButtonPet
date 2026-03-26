@@ -54,10 +54,13 @@ Before automated release can work end-to-end, configure:
 
 ## What Gets Released
 
-The `.pkgmeta` file controls what gets included:
-- OneButtonPet.lua
-- OneButtonPet.toc
-- Bindings.xml
-- CHANGELOG.md
-- README.md (excluded)
-- .git files (excluded)
+Only runtime addon files should ship to players.
+
+The PR package workflow stages files directly from `OneButtonPet.toc`, and the release workflow verifies that `.pkgmeta` produces the same runtime-only tree before uploading to GitHub and CurseForge.
+
+For the current addon, the packaged game files are:
+- `OneButtonPet.toc`
+- `Bindings.xml`
+- `OneButtonPet.lua`
+
+Non-game files such as `assets/`, `tests/`, docs, and repo metadata must stay out of the final addon archive.
