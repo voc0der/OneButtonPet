@@ -55,4 +55,4 @@ If no new tag appears, check whether the tag for that version already exists.
 Following [Semantic Versioning](https://semver.org/):
 - **MAJOR** (`v2.0.0`): Breaking changes
 - **MINOR** (`v1.1.0`): New features, backwards-compatible
-- **PATCH** (`v1.0.1`): Bug fixes, backwards-compatible
+- **PATCH** (`v1.0.2`): Bug fixes, backwards-compatible
