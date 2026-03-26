@@ -44,7 +44,7 @@ Use one short macro:
 
 1. Download or clone this repository.
 2. Place the `OneButtonPet` folder in:
-   - `World of Warcraft/_classic_/Interface/AddOns/`
+   - `World of Warcraft/_anniversary_/Interface/AddOns/`
 3. Launch the game and enable `OneButtonPet` in the AddOns list.
 
 The addon replaces the usual split macro logic:
