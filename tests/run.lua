@@ -30,6 +30,7 @@ local function setup_env(opts)
     local state = {
         frames = {},
         chat = {},
+        in_combat = opts.in_combat or false,
         time = opts.time or 100,
         pet_attack_calls = 0,
         pet_follow_calls = 0,
@@ -85,6 +86,10 @@ local function setup_env(opts)
 
     _G.GetTime = function()
         return state.time
+    end
+
+    _G.InCombatLockdown = function()
+        return state.in_combat
     end
 
     _G.UnitExists = function(unit)
@@ -297,6 +302,20 @@ run_test("binding wrapper triggers the toggle", function()
     OneButtonPet_ToggleBinding()
 
     assert_equal(state.pet_attack_calls, 1, "binding should issue attack")
+end)
+
+run_test("slash toggle warns in combat instead of issuing protected pet commands", function()
+    local state = setup_env({
+        in_combat = true,
+        target = { guid = "Target-4", name = "Enemy", can_attack = true },
+    })
+
+    SlashCmdList["PETTOGGLE"]("")
+
+    assert_equal(state.pet_attack_calls, 0, "slash toggle should not attack in combat")
+    assert_equal(state.pet_follow_calls, 0, "slash toggle should not follow in combat")
+    assert_equal(#state.chat, 2, "slash toggle should explain the binding recommendation")
+    assert_true(state.chat[1]:find("addon keybind", 1, true) ~= nil, "warning should point to the addon keybind")
 end)
 
 run_test("help command prints usage without issuing commands", function()

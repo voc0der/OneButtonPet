@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [1.0.3] - 2026-03-31
+
+### Changed
+- Repositioned the addon keybind as the actual pet-control path and clarified the slash-command wording around it
+
+### Fixed
+- Prevented the slash toggle path from attempting protected pet commands during combat, with in-game messaging that directs players to the addon keybind
+
 ## [1.0.2] - 2026-03-26
 
 ### Added

@@ -5,10 +5,10 @@
 # OneButtonPet
 
 - One button to toggle pet attack and follow on your current target
-- Built for a simple `/pettoggle` macro or a direct addon keybind
+- Pet control is handled through the addon keybind
 - Keeps a short target memory so rapid double-taps still switch cleanly between attack and follow
 
-Current version: `1.0.2`
+Current version: `1.0.3`
 
 ## In Game
 
@@ -16,12 +16,9 @@ Current version: `1.0.2`
   <img src="assets/macro-usage-screenshot.png" alt="OneButtonPet macro and keybind usage" width="700" />
 </p>
 
-Use one short macro:
+Use `Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow`.
 
-```text
-#showtooltip
-/pettoggle
-```
+`/pettoggle`, `/onebuttonpet`, and `/obp` remain available for slash access, and `/pettoggle help` plus `/pettoggle status` still work, but actual pet control is through the addon keybind.
 
 ## Usage
 
@@ -30,14 +27,15 @@ Use one short macro:
 - `/obp`
 - `/pettoggle help`
 - `/pettoggle status`
-- Bind `Toggle Pet Attack/Follow` under `Key Bindings -> AddOns`
+- Set `Toggle Pet Attack/Follow` under `Key Bindings -> AddOns -> OneButtonPet`
 
 ## Behavior
 
 - First press on a hostile living target sends pet attack
 - Second press on that same target toggles pet follow
 - Friendly, dead, or missing targets default to pet follow
-- Adds a direct key binding entry under `Key Bindings -> AddOns`
+- Pet control is exposed through a direct key binding entry under `Key Bindings -> AddOns`
+- Warns when `/pettoggle` is used in combat, because pet control is handled through the addon keybind
 - Keeps the addon focused on a lightweight single-button pet command
 
 ## Install
@@ -57,11 +55,10 @@ The addon replaces the usual split macro logic:
 /petfollow [noexists]
 ```
 
-with a single toggle command:
+with a single addon binding plus an optional slash command:
 
 ```text
-#showtooltip
-/pettoggle
+Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow
 ```
 
 ## Contributing

@@ -6,6 +6,7 @@ local REMEMBER_TARGET_WINDOW = 1.0
 
 local OneButtonPet = {
     addonName = addonName,
+    hasWarnedAboutSlashInCombat = false,
     lastAttackTargetToken = nil,
     lastAttackAt = 0,
 }
@@ -30,6 +31,10 @@ local function GetNow()
         return GetTime()
     end
     return 0
+end
+
+local function IsInCombat()
+    return InCombatLockdown and InCombatLockdown() or false
 end
 
 local function GetUnitToken(unit)
@@ -171,7 +176,8 @@ function OneButtonPet:HandleSlash(input)
     if command == "help" then
         Print("Usage: /pettoggle toggles pet attack and follow on your current target.")
         Print("Aliases: /onebuttonpet, /obp")
-        Print("Keybind: Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow")
+        Print("Use Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow")
+        Print("Slash commands remain available for help and status, but pet control is through the addon keybind.")
         return
     end
 
@@ -183,6 +189,15 @@ function OneButtonPet:HandleSlash(input)
 
         local nextAction = self:ShouldToggleToFollow() and "follow" or "attack"
         Print("Next press will issue: " .. nextAction)
+        return
+    end
+
+    if IsInCombat() then
+        if not self.hasWarnedAboutSlashInCombat then
+            Print("OneButtonPet pet control uses the addon keybind, not slash macros.")
+            Print("Set Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow.")
+            self.hasWarnedAboutSlashInCombat = true
+        end
         return
     end
 

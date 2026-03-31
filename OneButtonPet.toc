@@ -2,7 +2,7 @@
 ## Title: OneButtonPet
 ## Notes: One button to toggle pet attack and follow on your current target.
 ## Author: voc0der
-## Version: 1.0.2
+## Version: 1.0.3
 ## X-Curse-Project-ID: 1492144
 
 Bindings.xml
