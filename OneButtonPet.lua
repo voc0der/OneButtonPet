@@ -13,7 +13,6 @@ local OneButtonPet = {
 
 _G.OneButtonPet = OneButtonPet
 
-BINDING_HEADER_ONEBUTTONPET = addonName
 BINDING_NAME_ONEBUTTONPET_TOGGLE = "Toggle Pet Attack/Follow"
 
 local function Print(message)
@@ -176,7 +175,7 @@ function OneButtonPet:HandleSlash(input)
     if command == "help" then
         Print("Usage: /pettoggle toggles pet attack and follow on your current target.")
         Print("Aliases: /onebuttonpet, /obp")
-        Print("Use Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow")
+        Print("Use Key Bindings -> AddOns, then bind Toggle Pet Attack/Follow.")
         Print("Slash commands remain available for help and status, but pet control is through the addon keybind.")
         return
     end
@@ -195,7 +194,7 @@ function OneButtonPet:HandleSlash(input)
     if IsInCombat() then
         if not self.hasWarnedAboutSlashInCombat then
             Print("OneButtonPet pet control uses the addon keybind, not slash macros.")
-            Print("Set Key Bindings -> AddOns -> OneButtonPet -> Toggle Pet Attack/Follow.")
+            Print("Set Key Bindings -> AddOns -> Toggle Pet Attack/Follow.")
             self.hasWarnedAboutSlashInCombat = true
         end
         return

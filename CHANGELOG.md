@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [1.0.5] - 2026-03-31
+
+### Fixed
+- Moved the binding into the `AddOns` keybinding category and stopped relying on a custom binding header, so players can find `Toggle Pet Attack/Follow` under `Key Bindings -> AddOns`
+
 ## [1.0.4] - 2026-03-31
 
 ### Fixed

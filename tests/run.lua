@@ -326,6 +326,15 @@ run_test("toc loads addon lua before bindings xml", function()
     assert_true(lua_line < bindings_line, "OneButtonPet.lua should load before Bindings.xml")
 end)
 
+run_test("bindings xml uses addons category without a custom header", function()
+    local file = assert(io.open("Bindings.xml", "r"))
+    local contents = file:read("*a")
+    file:close()
+
+    assert_true(contents:find('category="ADDONS"', 1, true) ~= nil, "Bindings.xml should place the binding under AddOns")
+    assert_true(contents:find('header="ONEBUTTONPET"', 1, true) == nil, "Bindings.xml should not rely on a custom header")
+end)
+
 run_test("slash toggle warns in combat instead of issuing protected pet commands", function()
     local state = setup_env({
         in_combat = true,

@@ -2,14 +2,14 @@
 
 OneButtonPet gives hunters a single addon keybind to switch pet attack and pet follow without juggling split macro logic.
 
-Current version: `1.0.4`
+Current version: `1.0.5`
 
 ## Setup
 
 1. Install the `OneButtonPet` folder in your TBC Anniversary Classic `Interface/AddOns` directory.
 2. Launch the game and enable `OneButtonPet`.
-3. Open `Key Bindings -> AddOns -> OneButtonPet`.
-4. Bind `Toggle Pet Attack/Follow`.
+3. Open `Key Bindings -> AddOns`.
+4. Find `Toggle Pet Attack/Follow` and bind it.
 
 Pet control is handled through that addon keybind.
 
