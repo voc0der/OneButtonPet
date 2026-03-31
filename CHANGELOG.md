@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [1.0.4] - 2026-03-31
+
+### Fixed
+- Restored the binding definition and loaded addon Lua before `Bindings.xml`, so `Toggle Pet Attack/Follow` shows up again under `Key Bindings -> AddOns -> OneButtonPet`
+
 ## [1.0.3] - 2026-03-31
 
 ### Changed

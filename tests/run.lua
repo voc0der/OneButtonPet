@@ -304,6 +304,28 @@ run_test("binding wrapper triggers the toggle", function()
     assert_equal(state.pet_attack_calls, 1, "binding should issue attack")
 end)
 
+run_test("toc loads addon lua before bindings xml", function()
+    local toc = assert(io.open("OneButtonPet.toc", "r"))
+    local lua_line
+    local bindings_line
+    local line_number = 0
+
+    for line in toc:lines() do
+        line_number = line_number + 1
+        if line == "OneButtonPet.lua" then
+            lua_line = line_number
+        elseif line == "Bindings.xml" then
+            bindings_line = line_number
+        end
+    end
+
+    toc:close()
+
+    assert_true(lua_line ~= nil, "toc should list OneButtonPet.lua")
+    assert_true(bindings_line ~= nil, "toc should list Bindings.xml")
+    assert_true(lua_line < bindings_line, "OneButtonPet.lua should load before Bindings.xml")
+end)
+
 run_test("slash toggle warns in combat instead of issuing protected pet commands", function()
     local state = setup_env({
         in_combat = true,

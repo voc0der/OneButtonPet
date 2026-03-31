@@ -2,7 +2,7 @@
 
 OneButtonPet gives hunters a single addon keybind to switch pet attack and pet follow without juggling split macro logic.
 
-Current version: `1.0.3`
+Current version: `1.0.4`
 
 ## Setup
 
