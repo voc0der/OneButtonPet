@@ -1,5 +1,5 @@
 <Bindings>
-    <Binding name="ONEBUTTONPET_TOGGLE" category="ADDONS">
-        OneButtonPet_ToggleBinding();
+    <Binding name="CLICK OneButtonPetSecureToggleButton:LeftButton" category="ADDONS">
+        -- OneButtonPet secure click binding
     </Binding>
 </Bindings>

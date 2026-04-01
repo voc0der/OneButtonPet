@@ -2,7 +2,7 @@
 
 OneButtonPet gives hunters a single addon keybind to switch pet attack and pet follow without juggling split macro logic.
 
-Current version: `1.0.5`
+Current version: `1.0.6`
 
 ## Setup
 
@@ -12,6 +12,7 @@ Current version: `1.0.5`
 4. Find `Toggle Pet Attack/Follow` and bind it.
 
 Pet control is handled through that addon keybind.
+Existing pre-`1.0.6` OneButtonPet keybinds are migrated to the secure binding automatically on login.
 
 ## Behavior
 
@@ -29,6 +30,13 @@ Slash commands still exist, but macros are not the supported pet-control path.
 - `/obp`
 - `/pettoggle help`
 - `/pettoggle status`
+- `/pettoggle debug on`
+- `/pettoggle debug off`
+- `/pettoggle debug status`
+
+## Debugging
+
+Use `/pettoggle debug on` while testing to print binding decisions in chat, including secure-button fallback choices during combat.
 
 ## Scope
 
