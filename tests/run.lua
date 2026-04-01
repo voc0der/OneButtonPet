@@ -10,6 +10,8 @@ local function assert_true(value, message)
     end
 end
 
+local unpack_values = table.unpack or unpack
+
 local function make_unit(opts)
     if not opts then
         return nil
@@ -24,11 +26,40 @@ local function make_unit(opts)
     }
 end
 
+local function copy_bindings(bindings)
+    local result = {}
+
+    for command, keys in pairs(bindings or {}) do
+        result[command] = {}
+        for index, key in ipairs(keys) do
+            result[command][index] = key
+        end
+    end
+
+    return result
+end
+
+local function remove_key_from_bindings(bindings, key)
+    for command, keys in pairs(bindings) do
+        for index = #keys, 1, -1 do
+            if keys[index] == key then
+                table.remove(keys, index)
+            end
+        end
+
+        if #keys == 0 then
+            bindings[command] = nil
+        end
+    end
+end
+
 local function setup_env(opts)
     opts = opts or {}
 
     local state = {
+        bindings = copy_bindings(opts.bindings),
         frames = {},
+        named_frames = {},
         chat = {},
         in_combat = opts.in_combat or false,
         time = opts.time or 100,
@@ -43,15 +74,21 @@ local function setup_env(opts)
             target = make_unit(opts.target),
         },
         pettarget_guid = opts.pettarget_guid,
+        set_binding_click_calls = {},
+        saved_bindings_calls = {},
+        current_binding_set = opts.current_binding_set or 1,
     }
 
     _G.OneButtonPet = nil
     _G.OneButtonPet_ToggleBinding = nil
     _G.BINDING_HEADER_ONEBUTTONPET = nil
     _G.BINDING_NAME_ONEBUTTONPET_TOGGLE = nil
+    _G["BINDING_NAME_CLICK OneButtonPetSecureToggleButton:LeftButton"] = nil
     _G.SLASH_PETTOGGLE1 = nil
     _G.SLASH_PETTOGGLE2 = nil
     _G.SLASH_PETTOGGLE3 = nil
+    _G.OneButtonPetDB = opts.saved_variables
+    _G.UIParent = {}
 
     _G.DEFAULT_CHAT_FRAME = {
         AddMessage = function(_, message)
@@ -59,26 +96,62 @@ local function setup_env(opts)
         end,
     }
 
-    local function new_frame()
+    local function new_frame(frame_type, name, parent, template)
         local frame = {
+            attributes = {},
             events = {},
+            frame_type = frame_type,
+            mouse_enabled = false,
+            name = name,
+            parent = parent,
+            registered_clicks = {},
             scripts = {},
+            template = template,
+            wrapped_scripts = {},
         }
 
         function frame:RegisterEvent(event)
             self.events[event] = true
         end
 
+        function frame:RegisterForClicks(...)
+            self.registered_clicks = { ... }
+        end
+
         function frame:SetScript(script_name, fn)
             self.scripts[script_name] = fn
         end
 
+        function frame:EnableMouse(enabled)
+            self.mouse_enabled = enabled ~= false
+        end
+
+        function frame:SetAttribute(attribute_name, value)
+            self.attributes[attribute_name] = value
+        end
+
+        function frame:GetAttribute(attribute_name)
+            return self.attributes[attribute_name]
+        end
+
+        function frame:WrapScript(target, script_name, pre_body, post_body)
+            self.wrapped_scripts[#self.wrapped_scripts + 1] = {
+                target = target,
+                script_name = script_name,
+                pre_body = pre_body,
+                post_body = post_body,
+            }
+        end
+
         state.frames[#state.frames + 1] = frame
+        if name ~= nil then
+            state.named_frames[name] = frame
+        end
         return frame
     end
 
-    _G.CreateFrame = function()
-        return new_frame()
+    _G.CreateFrame = function(frame_type, name, parent, template)
+        return new_frame(frame_type, name, parent, template)
     end
 
     _G.SlashCmdList = {}
@@ -90,6 +163,11 @@ local function setup_env(opts)
 
     _G.InCombatLockdown = function()
         return state.in_combat
+    end
+
+    _G.PlayerCanAttack = function(unit)
+        local info = state.units[unit]
+        return info and info.can_attack or false
     end
 
     _G.UnitExists = function(unit)
@@ -172,6 +250,36 @@ local function setup_env(opts)
         state.pettarget_guid = nil
     end
 
+    _G.GetBindingKey = function(command)
+        local keys = state.bindings[command]
+        if keys == nil then
+            return nil
+        end
+
+        return unpack_values(keys)
+    end
+
+    _G.SetBindingClick = function(key, button_name, mouse_button)
+        local command = "CLICK " .. button_name .. ":" .. (mouse_button or "LeftButton")
+        remove_key_from_bindings(state.bindings, key)
+        state.bindings[command] = state.bindings[command] or {}
+        state.bindings[command][#state.bindings[command] + 1] = key
+        state.set_binding_click_calls[#state.set_binding_click_calls + 1] = {
+            key = key,
+            button_name = button_name,
+            mouse_button = mouse_button or "LeftButton",
+        }
+        return true
+    end
+
+    _G.SaveBindings = function(binding_set)
+        state.saved_bindings_calls[#state.saved_bindings_calls + 1] = binding_set
+    end
+
+    _G.GetCurrentBindingSet = function()
+        return state.current_binding_set
+    end
+
     dofile("OneButtonPet.lua")
 
     function state:advance(seconds)
@@ -189,6 +297,16 @@ local function setup_env(opts)
             end
         end
     end
+
+    function state:get_frame(name)
+        return self.named_frames[name]
+    end
+
+    function state:get_secure_toggle_button()
+        return self.named_frames["OneButtonPetSecureToggleButton"]
+    end
+
+    state:fire("PLAYER_ENTERING_WORLD")
 
     return state
 end
@@ -304,6 +422,36 @@ run_test("binding wrapper triggers the toggle", function()
     assert_equal(state.pet_attack_calls, 1, "binding should issue attack")
 end)
 
+run_test("secure toggle button is created and synced for hostile targets", function()
+    local state = setup_env({
+        target = { guid = "Target-5", name = "Enemy", can_attack = true },
+    })
+
+    local button = state:get_secure_toggle_button()
+
+    assert_true(button ~= nil, "secure toggle button should exist")
+    assert_true(button.template:find("SecureActionButtonTemplate", 1, true) ~= nil, "button should inherit SecureActionButtonTemplate")
+    assert_true(button.template:find("SecureHandlerBaseTemplate", 1, true) ~= nil, "button should inherit SecureHandlerBaseTemplate")
+    assert_equal(button.attributes.obp_synced_action, "attack", "secure button should sync the attack action")
+    assert_equal(button.attributes.obp_synced_reason, "attack_target", "secure button should explain the synced action")
+    assert_equal(button.attributes.macrotext, "/petattack", "secure button should prime the attack macro")
+end)
+
+run_test("player entering world migrates legacy bindings to the secure click binding", function()
+    local state = setup_env({
+        bindings = {
+            ONEBUTTONPET_TOGGLE = { "CTRL-F" },
+        },
+        current_binding_set = 2,
+    })
+
+    assert_equal(#state.set_binding_click_calls, 1, "legacy keybind should be migrated once")
+    assert_equal(state.set_binding_click_calls[1].key, "CTRL-F", "legacy key should be reused")
+    assert_equal(state.set_binding_click_calls[1].button_name, "OneButtonPetSecureToggleButton", "migration should target the secure button")
+    assert_equal(state.saved_bindings_calls[1], 2, "migration should save the active binding set")
+    assert_equal(select(1, GetBindingKey("CLICK OneButtonPetSecureToggleButton:LeftButton")), "CTRL-F", "secure click binding should now own the key")
+end)
+
 run_test("toc loads addon lua before bindings xml", function()
     local toc = assert(io.open("OneButtonPet.toc", "r"))
     local lua_line
@@ -326,12 +474,21 @@ run_test("toc loads addon lua before bindings xml", function()
     assert_true(lua_line < bindings_line, "OneButtonPet.lua should load before Bindings.xml")
 end)
 
+run_test("toc stores per-character debug settings", function()
+    local toc = assert(io.open("OneButtonPet.toc", "r"))
+    local contents = toc:read("*a")
+    toc:close()
+
+    assert_true(contents:find("## SavedVariablesPerCharacter: OneButtonPetDB", 1, true) ~= nil, "toc should persist the debug toggle")
+end)
+
 run_test("bindings xml uses addons category without a custom header", function()
     local file = assert(io.open("Bindings.xml", "r"))
     local contents = file:read("*a")
     file:close()
 
     assert_true(contents:find('category="ADDONS"', 1, true) ~= nil, "Bindings.xml should place the binding under AddOns")
+    assert_true(contents:find('CLICK OneButtonPetSecureToggleButton:LeftButton', 1, true) ~= nil, "Bindings.xml should bind through the secure click button")
     assert_true(contents:find('header="ONEBUTTONPET"', 1, true) == nil, "Bindings.xml should not rely on a custom header")
 end)
 
@@ -356,9 +513,26 @@ run_test("help command prints usage without issuing commands", function()
 
     SlashCmdList["PETTOGGLE"]("help")
 
-    assert_true(#state.chat >= 3, "help should print usage")
+    assert_true(#state.chat >= 4, "help should print usage")
     assert_equal(state.pet_attack_calls, 0, "help should not attack")
     assert_equal(state.pet_follow_calls, 0, "help should not follow")
+end)
+
+run_test("debug commands toggle saved state and report status", function()
+    local state = setup_env({
+        target = { guid = "Target-6", name = "Enemy", can_attack = true },
+    })
+
+    SlashCmdList["PETTOGGLE"]("debug status")
+    assert_true(state.chat[#state.chat]:find("off", 1, true) ~= nil, "debug status should default to off")
+
+    SlashCmdList["PETTOGGLE"]("debug on")
+    assert_true(OneButtonPetDB.debug == true, "debug on should persist to saved variables")
+    assert_true(state.chat[#state.chat]:find("enabled", 1, true) ~= nil, "debug on should confirm enablement")
+
+    SlashCmdList["PETTOGGLE"]("debug off")
+    assert_true(OneButtonPetDB.debug == false, "debug off should persist to saved variables")
+    assert_true(state.chat[#state.chat]:find("disabled", 1, true) ~= nil, "debug off should confirm disablement")
 end)
 
 run_test("status reports missing pet cleanly", function()

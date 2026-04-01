@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+## [1.0.6] - 2026-04-01
+
+### Added
+- Added a per-character debug mode with `/pettoggle debug on|off|status` so keybind decisions can be traced in chat while testing
+
+### Fixed
+- Replaced the Lua-only keybind action with a secure click binding, so the addon hotkey can issue protected pet commands instead of just playing the keybind click sound
+- Automatically migrates existing `Toggle Pet Attack/Follow` bindings from the legacy command to the secure binding on login
+
 ## [1.0.5] - 2026-03-31
 
 ### Fixed
