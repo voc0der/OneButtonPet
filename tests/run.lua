@@ -452,7 +452,7 @@ run_test("player entering world migrates legacy bindings to the secure click bin
     assert_equal(select(1, GetBindingKey("CLICK OneButtonPetSecureToggleButton:LeftButton")), "CTRL-F", "secure click binding should now own the key")
 end)
 
-run_test("toc loads addon lua before bindings xml", function()
+run_test("toc relies on automatic loading for bindings xml", function()
     local toc = assert(io.open("OneButtonPet.toc", "r"))
     local lua_line
     local bindings_line
@@ -470,8 +470,7 @@ run_test("toc loads addon lua before bindings xml", function()
     toc:close()
 
     assert_true(lua_line ~= nil, "toc should list OneButtonPet.lua")
-    assert_true(bindings_line ~= nil, "toc should list Bindings.xml")
-    assert_true(lua_line < bindings_line, "OneButtonPet.lua should load before Bindings.xml")
+    assert_true(bindings_line == nil, "toc should not list Bindings.xml because the client auto-loads it")
 end)
 
 run_test("toc stores per-character debug settings", function()

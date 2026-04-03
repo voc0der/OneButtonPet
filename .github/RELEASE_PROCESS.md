@@ -8,7 +8,7 @@ Every push to `main` triggers an automated release pipeline:
 - The tag push triggers the packager workflow
 - `BigWigsMods/packager` builds the release zip and uploads to CurseForge when project metadata is configured
 
-**Update the version in OneButtonPet.toc before pushing.**
+**Update `OneButtonPet.toc`, `README.md`, and `CHANGELOG.md`, then run the release checks before pushing.**
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Every push to `main` triggers an automated release pipeline:
 
 Update `## Version:` in `OneButtonPet.toc` to a version that is not already tagged.
 
-### 2. Update CHANGELOG.md
+### 2. Update README.md and CHANGELOG.md
 
 ```markdown
 ## [Unreleased]
@@ -38,10 +38,18 @@ Update `## Version:` in `OneButtonPet.toc` to a version that is not already tagg
 - Bug fix description
 ```
 
-### 3. Commit and Push
+### 3. Run Release Checks
 
 ```bash
-git add OneButtonPet.toc CHANGELOG.md
+lua tests/run.lua
+luac -p OneButtonPet.lua tests/run.lua
+bash ./.github/scripts/verify-release-package.sh
+```
+
+### 4. Commit and Push
+
+```bash
+git add OneButtonPet.toc README.md CHANGELOG.md
 git commit -m "Release v1.0.X"
 git push
 ```

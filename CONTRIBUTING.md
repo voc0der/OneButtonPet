@@ -8,7 +8,7 @@ Keep changes focused on pet attack/follow behavior, slash-command ergonomics, an
 
 - Target client: TBC Anniversary Classic
 - Addon install path: `World of Warcraft/_classic_/Interface/AddOns/`
-- Main runtime files are listed in [OneButtonPet.toc](OneButtonPet.toc)
+- Main runtime files are listed in [OneButtonPet.toc](OneButtonPet.toc), except client auto-loaded files such as `Bindings.xml`
 
 ## Development
 
@@ -34,7 +34,7 @@ bash ./.github/scripts/verify-release-package.sh
 
 - Keep the addon focused on the one-button pet attack/follow workflow.
 - Prefer small, targeted changes over broad rewrites.
-- If you add a new runtime file, include it in [OneButtonPet.toc](OneButtonPet.toc).
+- If you add a new runtime file, include it in [OneButtonPet.toc](OneButtonPet.toc), or in release packaging if WoW auto-loads it like `Bindings.xml`.
 - Player-facing packages should only include files the game client actually needs.
 
 ## Pull Requests
@@ -48,4 +48,5 @@ bash ./.github/scripts/verify-release-package.sh
 
 - Release-specific steps are documented in [RELEASING.md](RELEASING.md).
 - Version bumps should update [OneButtonPet.toc](OneButtonPet.toc), the current version in [README.md](README.md), and the matching entry in [CHANGELOG.md](CHANGELOG.md).
+- Release verification should run `lua tests/run.lua`, `luac -p OneButtonPet.lua tests/run.lua`, and `bash ./.github/scripts/verify-release-package.sh` before pushing.
 - Packaging changes should keep working with both the PR artifact workflow and the GitHub/CurseForge release workflow.

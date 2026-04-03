@@ -51,7 +51,7 @@ for path in *; do
   cp -R "${path}" "${release_dir}/${path}"
 done
 
-if ! diff -ruN "${expected_dir}" "${release_dir}"; then
+if ! diff -ru "${expected_dir}" "${release_dir}"; then
   echo "Release package contents do not match the runtime addon files." >&2
   exit 1
 fi

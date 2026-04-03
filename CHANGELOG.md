@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [1.0.7] - 2026-04-03
+
+### Fixed
+- Stopped listing `Bindings.xml` in `OneButtonPet.toc`, so the WoW client uses its automatic bindings-file loading path and no longer reports `Unrecognized XML: Binding`
+- Kept release packaging and local verification including `Bindings.xml` even though it is no longer a `.toc` entry
+
 ## [1.0.6] - 2026-04-01
 
 ### Added

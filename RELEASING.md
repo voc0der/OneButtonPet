@@ -26,10 +26,16 @@ Before automated release can work end-to-end, configure:
 ### Automated (GitHub Actions)
 
 1. Update version in `OneButtonPet.toc`
-2. Update `CHANGELOG.md` with release notes
-3. Commit and push to `main`
-4. The tag workflow creates a version tag from the TOC
-5. The tag triggers the packager workflow
+2. Update `README.md` and `CHANGELOG.md` for the release
+3. Run:
+   ```bash
+   lua tests/run.lua
+   luac -p OneButtonPet.lua tests/run.lua
+   bash ./.github/scripts/verify-release-package.sh
+   ```
+4. Commit and push to `main`
+5. The tag workflow creates a version tag from the TOC
+6. The tag triggers the packager workflow
 
 ### Troubleshooting
 
@@ -45,18 +51,24 @@ Before automated release can work end-to-end, configure:
 
 ### Manual Upload to CurseForge
 
-1. Create a zip file:
+1. Stage only the runtime addon files:
    ```bash
-   cd /home/vocoder/Code
-   zip -r OneButtonPet-v1.0.X.zip OneButtonPet -x "*.git*" -x "*README.md"
+   cd /home/vocoder/Code/OneButtonPet
+   tmpdir="$(mktemp -d)"
+   ./.github/scripts/stage-addon.sh "$tmpdir/OneButtonPet"
    ```
-2. Upload at your CurseForge addon files page
+2. Create a zip file from the staged addon:
+   ```bash
+   cd "$tmpdir"
+   zip -r OneButtonPet-v1.0.X.zip OneButtonPet
+   ```
+3. Upload `"$tmpdir/OneButtonPet-v1.0.X.zip"` at your CurseForge addon files page
 
 ## What Gets Released
 
 Only runtime addon files should ship to players.
 
-The PR package workflow stages files directly from `OneButtonPet.toc`, and the release workflow verifies that `.pkgmeta` produces the same runtime-only tree before uploading to GitHub and CurseForge.
+The PR package workflow stages files from `OneButtonPet.toc` plus auto-loaded runtime files such as `Bindings.xml`, and the release workflow verifies that `.pkgmeta` produces the same runtime-only tree before uploading to GitHub and CurseForge.
 
 For the current addon, the packaged game files are:
 - `OneButtonPet.toc`

@@ -7,6 +7,7 @@ manual-changelog:
   markup-type: markdown
 
 ignore:
+  - .codex
   - CHANGELOG.md
   - CONTRIBUTING.md
   - LICENSE
