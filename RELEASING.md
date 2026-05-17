@@ -5,7 +5,7 @@
 OneButtonPet targets TBC Anniversary Classic. The TOC file specifies:
 
 ```text
-## Interface: 20504
+## Interface: 20505
 ```
 
 ## Workflow Prerequisites
